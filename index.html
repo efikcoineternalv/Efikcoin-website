@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>EfikcoinEternal – EFC Ecosystem</title>
+    <!-- Web3Modal & Ethers -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3modal@1.9.11/dist/index.js"></script>
+    <!-- Chart.js for portfolio chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Font Awesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0B0F1F;
+            color: #E0E4F0;
+            line-height: 1.5;
+            padding: 1.5rem;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        /* Header & Nav */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: rgba(15, 20, 35, 0.7);
+            backdrop-filter: blur(12px);
+            padding: 1rem 2rem;
+            border-radius: 2rem;
+            border: 1px solid rgba(66, 153, 225, 0.3);
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #F5B042, #D48A2B);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .logo span {
+            font-size: 0.9rem;
+            font-weight: 400;
+            background: none;
+            color: #8E9BB0;
+        }
+        .connect-btn {
+            background: #2D3748;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 2rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .connect-btn:hover {
+            background: #4A5B7A;
+            transform: scale(1.02);
+        }
+        .wallet-status {
+            background: #1E293B;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+        }
+        /* Cards */
+        .card {
+            background: #111827;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #1F2A44;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            transition: 0.2s;
+        }
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            border-left: 4px solid #F5B042;
+            padding-left: 0.75rem;
+        }
+        .grid-2col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
+        }
+        .address-badge {
+            background: #0F172A;
+            padding: 0.5rem;
+            border-radius: 1rem;
+            font-family: monospace;
+            font-size: 0.8rem;
+            word-break: break-all;
+            margin: 0.5rem 0;
+        }
+        .btn {
+            background: #F5B042;
+            color: #0B0F1F;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #F5B042;
+            color: #F5B042;
+        }
+        .btn-outline:hover {
+            background: #F5B04220;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.05);
+        }
+        input, select {
+            background: #0F172A;
+            border: 1px solid #2D3A5E;
+            padding: 0.7rem;
+            border-radius: 1rem;
+            color: white;
+            width: 100%;
+            margin: 0.5rem 0;
+        }
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .telegram-link {
+            background: #1E293B;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            color: #F5B042;
+            font-weight: 500;
+        }
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #1F2A44;
+            font-size: 0.8rem;
+        }
+        @media (max-width: 700px) {
+            body { padding: 1rem; }
+            .navbar { flex-direction: column; align-items: stretch; text-align: center; }
+        }
+        .token-value { font-size: 1.8rem; font-weight: 800; color: #F5B042; }
+        .small-text { font-size: 0.75rem; color: #8E9BB0; }
+        .history-item {
+            background: #0F172A;
+            padding: 0.6rem;
+            border-radius: 1rem;
+            margin: 0.5rem 0;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Navigation -->
+    <div class="navbar">
+        <div class="logo">EFIKCOIN ETERNAL <span>| EFC Ecosystem</span></div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <a href="https://t.me/ECEcoin18" target="_blank" class="telegram-link"><i class="fab fa-telegram"></i> Admin Contact</a>
+            <button id="connectWalletBtn" class="connect-btn"><i class="fas fa-wallet"></i> Connect Wallet</button>
+            <div id="walletDisplay" class="wallet-status">Not connected</div>
+        </div>
+    </div>
+
+    <!-- Important addresses section -->
+    <div class="card">
+        <div class="card-title"><i class="fas fa-link"></i> Core Ecosystem Addresses</div>
+        <div class="grid-2col">
+            <div><strong>💰 Token Contract:</strong><div class="address-badge">0x09d3da67bb62b07427a13b5aa8d0fdd08870b2b4</div></div>
+            <div><strong>🔄 Pool Address:</strong><div class="address-badge">0x7489e9dd4B4E68e10E83b2A878C0f3430bfA19A5</div></div>
+            <div><strong>🏦 Treasury / DONET:</strong><div class="address-badge">0x676cCf34C191a9D6EFE4B265b84877C619A559d0</div></div>
+            <div><strong>👑 Admin / Deployer:</strong><div class="address-badge">0xC5AD5cfcF81AD63a94227334b898eafCe6B27cCA</div></div>
+        </div>
+        <div class="small-text" style="margin-top: 0.5rem;">✅ All contracts verified on blockchain explorer.</div>
+    </div>
+
+    <!-- Wallet + Portfolio Dashboard -->
+    <div class="grid-2col">
+        <!-- LEFT: Wallet & Token Info -->
+        <div class="card">
+            <div class="card-title"><i class="fas fa-chart-line"></i> My Portfolio</div>
+            <div id="portfolioContent">
+                <div class="flex-between"><span>EFC Balance:</span> <span id="efcBalance">—</span></div>
+                <div class="flex-between"><span>≈ USD Value:</span> <span id="usdValue">$—</span></div>
+                <div class="flex-between"><span>Token Symbol:</span> <span id="tokenSymbol">EFC</span></div>
+                <div class="flex-between"><span>Decimals:</span> <span id="tokenDecimals">—</span></div>
+                <hr style="margin: 1rem 0; border-color: #1F2A44;">
+                <div><strong>Registered user:</strong> <span id="registeredUser">Not registered</span></div>
+                <button id="registerBtn" class="btn btn-outline" style="width:100%; margin-top: 0.5rem;"><i class="fas fa-user-plus"></i> Register / Update Profile</button>
+                <div id="regStatus" class="small-text" style="margin-top: 0.5rem;"></div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Buy/Sell & Trading Links -->
+        <div class="card">
+            <div class="card-title"><i class="fas fa-exchange-alt"></i> Trade EFC</div>
+            <p>Swap directly on Uniswap (Ethereum mainnet). Your pool is ready.</p>
+            <div class="flex-between" style="margin: 1rem 0;">
+                <a href="https://app.uniswap.org/#/swap?outputCurrency=0x09d3da67bb62b07427a13b5aa8d0fdd08870b2b4" target="_blank" class="btn"><i class="fab fa-uniswap"></i> Buy on Uniswap</a>
+                <a href="https://app.uniswap.org/#/swap?inputCurrency=0x09d3da67bb62b07427a13b5aa8d0fdd08870b2b4" target="_blank" class="btn-outline btn"><i class="fas fa-chart-simple"></i> Sell on Uniswap</a>
+            </div>
+            <div class="small-text">⚠️ Always trade with caution. Use official pool address: <br>0x7489e9dd4B4E68e10E83b2A878C0f3430bfA19A5</div>
+            <hr style="margin: 1rem 0;">
+            <div><strong>📊 Quick actions</strong></div>
+            <button id="addToWalletBtn" class="btn-outline btn" style="width:100%; margin-top: 0.5rem;"><i class="fas fa-plus-circle"></i> Add EFC Token to Wallet</button>
+        </div>
+    </div>
+
+    <!-- User registration + History section (local) -->
+    <div class="card">
+        <div class="card-title"><i class="fas fa-users"></i> Client Ecosystem & Activity</div>
+        <div class="grid-2col">
+            <div>
+                <h3>📝 Registration benefits</h3>
+                <p>Link your wallet to a username. Your trades & portfolio are saved locally (only you see). Future upgrades to on‑chain ID possible.</p>
+                <input type="text" id="usernameInput" placeholder="Choose a username (e.g., EfikTrader)">
+                <button id="saveProfileBtn" class="btn" style="width:100%">Save Profile</button>
+            </div>
+            <div>
+                <h3>🕒 Recent Activity</h3>
+                <div id="historyList">No transactions yet. Use Uniswap above – after swapping, add a manual record below.</div>
+                <div class="flex-between" style="margin-top: 0.8rem;">
+                    <input type="text" id="txNote" placeholder="e.g., Bought 500 EFC" style="width: 60%;">
+                    <button id="addTxBtn" class="btn-outline btn">+ Add Record</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tokenomics / Chart Area (visual) -->
+    <div class="card">
+        <div class="card-title"><i class="fas fa-chart-pie"></i> EFC Tokenomics Overview</div>
+        <canvas id="tokenomicsChart" width="400" height="200" style="max-height: 250px; width:100%"></canvas>
+        <div class="small-text" style="margin-top: 1rem;">🔒 Liquidity locked via pool address. Treasury managed by multi‑sig admin.</div>
+    </div>
+
+    <footer>
+        <p>© 2025 EfikcoinEternal – Decentralized Ecosystem. This platform provides information & wallet connection. All trading happens on external DEX. <br> 
+        <strong>Privacy guaranteed</strong>: No data collection, no selling. Your keys, your coins.</p>
+    </footer>
+</div>
+
+<script>
+    // ---------------------- CONFIGURATION -------------------------
+    const TOKEN_ADDRESS = "0x09d3da67bb62b07427a13b5aa8d0fdd08870b2b4";
+    const POOL_ADDRESS = "0x7489e9dd4B4E68e10E83b2A878C0f3430bfA19A5";
+    const TREASURY_ADDRESS = "0x676cCf34C191a9D6EFE4B265b84877C619A559d0";
+    const ADMIN_ADDRESS = "0xC5AD5cfcF81AD63a94227334b898eafCe6B27cCA";
+    // Minimal ERC20 ABI (balanceOf, decimals, symbol, totalSupply)
+    const ERC20_ABI = [
+        "function balanceOf(address owner) view returns (uint256)",
+        "function decimals() view returns (uint8)",
+        "function symbol() view returns (string)",
+        "function totalSupply() view returns (uint256)"
+    ];
+    const RPC_URL = "https://eth.llamarpc.com"; // public Ethereum RPC (reliable)
+
+    let provider = null;
+    let signer = null;
+    let userAddress = null;
+    let tokenContract = null;
+    let tokenDecimals = 18;
+    let tokenSymbol = "EFC";
+    let efcBalanceRaw = "0";
+
+    // Local storage keys
+    const STORAGE_USERS = "efc_registered_users";
+    const STORAGE_HISTORY = "efc_history_";
+
+    // DOM elements
+    const connectBtn = document.getElementById("connectWalletBtn");
+    const walletDisplay = document.getElementById("walletDisplay");
+    const efcBalanceSpan = document.getElementById("efcBalance");
+    const usdValueSpan = document.getElementById("usdValue");
+    const tokenSymbolSpan = document.getElementById("tokenSymbol");
+    const tokenDecimalsSpan = document.getElementById("tokenDecimals");
+    const registeredUserSpan = document.getElementById("registeredUser");
+    const regStatusDiv = document.getElementById("regStatus");
+    const usernameInput = document.getElementById("usernameInput");
+    const saveProfileBtn = document.getElementById("saveProfileBtn");
+    const historyListDiv = document.getElementById("historyList");
+    const addTxBtn = document.getElementById("addTxBtn");
+    const txNoteInput = document.getElementById("txNote");
+    const registerBtn = document.getElementById("registerBtn");
+    const addToWalletBtn = document.getElementById("addToWalletBtn");
+
+    // Helper: load user profile from localStorage
+    function loadUserProfile() {
+        if (!userAddress) return null;
+        const users = JSON.parse(localStorage.getItem(STORAGE_USERS) || "{}");
+        const profile = users[userAddress.toLowerCase()];
+        if (profile) {
+            registeredUserSpan.innerText = profile.username || "Unnamed";
+            if (usernameInput) usernameInput.value = profile.username || "";
+            return profile;
+        } else {
+            registeredUserSpan.innerText = "Not registered";
+            return null;
+        }
+    }
+
+    function saveUserProfile(username) {
+        if (!userAddress) {
+            regStatusDiv.innerText = "Connect wallet first!";
+            return false;
+        }
+        if (!username.trim()) {
+            regStatusDiv.innerText = "Username required";
+            return false;
+        }
+        const users = JSON.parse(localStorage.getItem(STORAGE_USERS) || "{}");
+        users[userAddress.toLowerCase()] = { username: username.trim(), registeredAt: Date.now() };
+        localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
+        registeredUserSpan.innerText = username.trim();
+        regStatusDiv.innerText = "Profile saved! ✔️";
+        setTimeout(() => regStatusDiv.innerText = "", 2000);
+        return true;
+    }
+
+    function loadTransactionHistory() {
+        if (!userAddress) {
+            historyListDiv.innerHTML = "Connect wallet to see your history.";
+            return [];
+        }
+        const key = STORAGE_HISTORY + userAddress.toLowerCase();
+        const history = JSON.parse(localStorage.getItem(key) || "[]");
+        if (history.length === 0) {
+            historyListDiv.innerHTML = "No activity recorded. Add custom record or use Uniswap then click '+'.";
+        } else {
+            historyListDiv.innerHTML = history.map(tx => `<div class="history-item">${tx.timestamp} : ${tx.note}</div>`).join('');
+        }
+        return history;
+    }
+
+    function addTransactionRecord(note) {
+        if (!userAddress) { alert("Connect wallet first"); return false; }
+        if (!note.trim()) { alert("Enter a note"); return false; }
+        const key = STORAGE_HISTORY + userAddress.toLowerCase();
+        const history = JSON.parse(localStorage.getItem(key) || "[]");
+        history.unshift({ timestamp: new Date().toLocaleString(), note: note.trim() });
+        localStorage.setItem(key, JSON.stringify(history.slice(0, 20))); // keep last 20
+        loadTransactionHistory();
+        return true;
+    }
+
+    // Fetch token info & balance
+    async function updateTokenInfo() {
+        if (!provider || !tokenContract) return;
+        try {
+            const decimals = await tokenContract.decimals();
+            tokenDecimals = decimals;
+            tokenDecimalsSpan.innerText = decimals;
+            const symbol = await tokenContract.symbol();
+            tokenSymbol = symbol;
+            tokenSymbolSpan.innerText = symbol;
+            if (userAddress) {
+                const balance = await tokenContract.balanceOf(userAddress);
+                efcBalanceRaw = balance;
+                const formatted = ethers.utils.formatUnits(balance, decimals);
+                efcBalanceSpan.innerText = parseFloat(formatted).toFixed(4) + " " + symbol;
+                // mock USD price (you can later replace with CoinGecko API) – demo value $0.05
+                const mockPrice = 0.05;
+                const usd = parseFloat(formatted) * mockPrice;
+                usdValueSpan.innerText = "$" + usd.toFixed(2);
+            } else {
+                efcBalanceSpan.innerText = "—";
+                usdValueSpan.innerText = "$—";
+            }
+        } catch(e) { console.warn(e); }
+    }
+
+    async function setupTokenContract(providerInstance) {
+        provider = providerInstance;
+        tokenContract = new ethers.Contract(TOKEN_ADDRESS, ERC20_ABI, provider);
+        try {
+            tokenDecimals = await tokenContract.decimals();
+            tokenSymbol = await tokenContract.symbol();
+            tokenSymbolSpan.innerText = tokenSymbol;
+            tokenDecimalsSpan.innerText = tokenDecimals;
+        } catch(e) { console.log("Could not fetch token details, using defaults"); }
+    }
+
+    // Wallet connection using Web3Modal
+    async function connectWallet() {
+        const providerOptions = {};
+        const web3Modal = new Web3Modal.default({
+            cacheProvider: false,
+            providerOptions,
+            theme: "dark"
+        });
+        try {
+            const web3Provider = await web3Modal.connect();
+            const ethersProvider = new ethers.providers.Web3Provider(web3Provider);
+            const network = await ethersProvider.getNetwork();
+            if (network.chainId !== 1) {
+                alert("Please switch to Ethereum Mainnet. This ecosystem uses ETH mainnet.");
+                return;
+            }
+            const signerObj = ethersProvider.getSigner();
+            const address = await signerObj.getAddress();
+            userAddress = address;
+            signer = signerObj;
+            provider = ethersProvider;
+            walletDisplay.innerText = address.slice(0,6)+"..."+address.slice(-4);
+            await setupTokenContract(ethersProvider);
+            await updateTokenInfo();
+            loadUserProfile();
+            loadTransactionHistory();
+            // listen to account changes
+            web3Provider.on("accountsChanged", async (accounts) => {
+                if (accounts.length === 0) location.reload();
+                else { userAddress = accounts[0]; walletDisplay.innerText = userAddress.slice(0,6)+"..."; updateTokenInfo(); loadUserProfile(); loadTransactionHistory(); }
+            });
+        } catch(err) { console.error(err); alert("Connection error: "+err.message); }
+    }
+
+    // Add token to MetaMask
+    async function addTokenToWallet() {
+        if (!window.ethereum) { alert("Please install MetaMask"); return; }
+        try {
+            await window.ethereum.request({
+                method: 'wallet_watchAsset',
+                params: {
+                    type: 'ERC20',
+                    options: {
+                        address: TOKEN_ADDRESS,
+                        symbol: tokenSymbol,
+                        decimals: tokenDecimals,
+                        image: '', // optional
+                    },
+                },
+            });
+        } catch(e) { console.log(e); }
+    }
+
+    // Chart for tokenomics (visual only)
+    let chart;
+    function initTokenomicsChart() {
+        const ctx = document.getElementById('tokenomicsChart').getContext('2d');
+        chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Community & Rewards', 'Liquidity Pool', 'Treasury', 'Team/Development'],
+                datasets: [{
+                    data: [40, 30, 20, 10],
+                    backgroundColor: ['#F5B042', '#4A90E2', '#2C3E66', '#C44569'],
+                    borderWidth: 0
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { color: '#E0E4F0' } } } }
+        });
+    }
+
+    // Event listeners
+    connectBtn.addEventListener("click", connectWallet);
+    saveProfileBtn.addEventListener("click", () => saveUserProfile(usernameInput.value));
+    addTxBtn.addEventListener("click", () => addTransactionRecord(txNoteInput.value));
+    registerBtn.addEventListener("click", () => { if(userAddress) saveUserProfile(usernameInput.value || "EFC_Holder"); else alert("Connect wallet"); });
+    addToWalletBtn.addEventListener("click", addTokenToWallet);
+    
+    // Init
+    initTokenomicsChart();
+    // Try to read existing local storage but no auto-connect for security
+    if(window.ethereum && window.ethereum.selectedAddress) {
+        // optional silent connect? better ask user
+    }
+    // Prefill any existing
+    if(window.ethereum) {
+        // just ready
+    }
+    // set placeholders
+    tokenDecimalsSpan.innerText = "—";
+    tokenSymbolSpan.innerText = "EFC";
+</script>
+</body>
+</html>
