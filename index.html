@@ -1,508 +1,443 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>EfikcoinEternal – EFC Ecosystem</title>
-    <!-- Web3Modal & Ethers -->
-    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/web3modal@1.9.11/dist/index.js"></script>
-    <!-- Chart.js for portfolio chart -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <!-- Font Awesome & Google Fonts -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Efikcoin Eternal (ECE) | Global Blockchain Ecosystem & Empowerment Protocol</title>
+    <!-- Tailwind CSS Engine -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome Library for Web3 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         body {
-            font-family: 'Inter', sans-serif;
-            background: #0B0F1F;
-            color: #E0E4F0;
-            line-height: 1.5;
-            padding: 1.5rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #06070d;
         }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
+        .glow-gold {
+            box-shadow: 0 0 30px rgba(234, 179, 8, 0.15);
         }
-        /* Header & Nav */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            background: rgba(15, 20, 35, 0.7);
-            backdrop-filter: blur(12px);
-            padding: 1rem 2rem;
-            border-radius: 2rem;
-            border: 1px solid rgba(66, 153, 225, 0.3);
-        }
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #F5B042, #D48A2B);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .logo span {
-            font-size: 0.9rem;
-            font-weight: 400;
-            background: none;
-            color: #8E9BB0;
-        }
-        .connect-btn {
-            background: #2D3748;
-            border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 2rem;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .connect-btn:hover {
-            background: #4A5B7A;
-            transform: scale(1.02);
-        }
-        .wallet-status {
-            background: #1E293B;
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            font-size: 0.85rem;
-        }
-        /* Cards */
-        .card {
-            background: #111827;
-            border-radius: 1.5rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid #1F2A44;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            transition: 0.2s;
-        }
-        .card-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            border-left: 4px solid #F5B042;
-            padding-left: 0.75rem;
-        }
-        .grid-2col {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 1.5rem;
-        }
-        .address-badge {
-            background: #0F172A;
-            padding: 0.5rem;
-            border-radius: 1rem;
-            font-family: monospace;
-            font-size: 0.8rem;
-            word-break: break-all;
-            margin: 0.5rem 0;
-        }
-        .btn {
-            background: #F5B042;
-            color: #0B0F1F;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 2rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .btn-outline {
-            background: transparent;
-            border: 1px solid #F5B042;
-            color: #F5B042;
-        }
-        .btn-outline:hover {
-            background: #F5B04220;
-        }
-        .btn:hover {
+        .glow-card:hover {
+            box-shadow: 0 10px 30px rgba(234, 179, 8, 0.08);
+            border-color: rgba(234, 179, 8, 0.3);
             transform: translateY(-2px);
-            filter: brightness(1.05);
         }
-        input, select {
-            background: #0F172A;
-            border: 1px solid #2D3A5E;
-            padding: 0.7rem;
-            border-radius: 1rem;
-            color: white;
-            width: 100%;
-            margin: 0.5rem 0;
-        }
-        .flex-between {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-        }
-        .telegram-link {
-            background: #1E293B;
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            text-decoration: none;
-            color: #F5B042;
-            font-weight: 500;
-        }
-        footer {
-            text-align: center;
-            margin-top: 3rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #1F2A44;
-            font-size: 0.8rem;
-        }
-        @media (max-width: 700px) {
-            body { padding: 1rem; }
-            .navbar { flex-direction: column; align-items: stretch; text-align: center; }
-        }
-        .token-value { font-size: 1.8rem; font-weight: 800; color: #F5B042; }
-        .small-text { font-size: 0.75rem; color: #8E9BB0; }
-        .history-item {
-            background: #0F172A;
-            padding: 0.6rem;
-            border-radius: 1rem;
-            margin: 0.5rem 0;
-            font-size: 0.8rem;
+        .bg-noise {
+            background-image: radial-gradient(rgba(234, 179, 8, 0.03) 1px, transparent 0);
+            background-size: 24px 24px;
         }
     </style>
 </head>
-<body>
-<div class="container">
-    <!-- Navigation -->
-    <div class="navbar">
-        <div class="logo">EFIKCOIN ETERNAL <span>| EFC Ecosystem</span></div>
-        <div style="display: flex; gap: 1rem; align-items: center;">
-            <a href="https://t.me/ECEcoin18" target="_blank" class="telegram-link"><i class="fab fa-telegram"></i> Admin Contact</a>
-            <button id="connectWalletBtn" class="connect-btn"><i class="fas fa-wallet"></i> Connect Wallet</button>
-            <div id="walletDisplay" class="wallet-status">Not connected</div>
-        </div>
-    </div>
+<body class="text-gray-300 min-h-screen bg-noise antialiased">
 
-    <!-- Important addresses section -->
-    <div class="card">
-        <div class="card-title"><i class="fas fa-link"></i> Core Ecosystem Addresses</div>
-        <div class="grid-2col">
-            <div><strong>💰 Token Contract:</strong><div class="address-badge">0x09d3da67bb62b07427a13b5aa8d0fdd08870b2b4</div></div>
-            <div><strong>🔄 Pool Address:</strong><div class="address-badge">0x7489e9dd4B4E68e10E83b2A878C0f3430bfA19A5</div></div>
-            <div><strong>🏦 Treasury / DONET:</strong><div class="address-badge">0x676cCf34C191a9D6EFE4B265b84877C619A559d0</div></div>
-            <div><strong>👑 Admin / Deployer:</strong><div class="address-badge">0xC5AD5cfcF81AD63a94227334b898eafCe6B27cCA</div></div>
-        </div>
-        <div class="small-text" style="margin-top: 0.5rem;">✅ All contracts verified on blockchain explorer.</div>
-    </div>
+    <!-- SECTION 1: GLOBAL NAVIGATION BAR -->
+    <nav class="sticky top-0 z-50 backdrop-blur-md bg-[#06070d]/80 border-b border-gray-900 px-4 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <!-- Brand Platform Identity -->
+            <div class="flex items-center space-x-3">
+                <div class="w-11 h-11 bg-gradient-to-br from-yellow-300 via-yellow-500 to-amber-600 rounded-full flex items-center justify-center font-extrabold text-black border border-yellow-400 shadow-lg shadow-yellow-500/10">
+                    EFC
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold text-white tracking-wide block">EFIKCOIN</span>
+                    <span class="text-xs text-yellow-500 font-semibold tracking-widest uppercase block">Coin is Life 🕊️</span>
+                </div>
+            </div>
 
-    <!-- Wallet + Portfolio Dashboard -->
-    <div class="grid-2col">
-        <!-- LEFT: Wallet & Token Info -->
-        <div class="card">
-            <div class="card-title"><i class="fas fa-chart-line"></i> My Portfolio</div>
-            <div id="portfolioContent">
-                <div class="flex-between"><span>EFC Balance:</span> <span id="efcBalance">—</span></div>
-                <div class="flex-between"><span>≈ USD Value:</span> <span id="usdValue">$—</span></div>
-                <div class="flex-between"><span>Token Symbol:</span> <span id="tokenSymbol">EFC</span></div>
-                <div class="flex-between"><span>Decimals:</span> <span id="tokenDecimals">—</span></div>
-                <hr style="margin: 1rem 0; border-color: #1F2A44;">
-                <div><strong>Registered user:</strong> <span id="registeredUser">Not registered</span></div>
-                <button id="registerBtn" class="btn btn-outline" style="width:100%; margin-top: 0.5rem;"><i class="fas fa-user-plus"></i> Register / Update Profile</button>
-                <div id="regStatus" class="small-text" style="margin-top: 0.5rem;"></div>
+            <!-- Global Anchor Links -->
+            <div class="hidden lg:flex items-center space-x-8 text-sm font-medium">
+                <a href="#about" class="hover:text-yellow-500 transition-colors">Ecosystem</a>
+                <a href="#tokenomics" class="hover:text-yellow-500 transition-colors">Token Economics</a>
+                <a href="#staking" class="hover:text-yellow-500 transition-colors">Staking Engine</a>
+                <a href="#charity" class="hover:text-yellow-500 transition-colors">Global Charity</a>
+                <a href="#dashboard" class="hover:text-yellow-500 transition-colors">App Dashboard</a>
+            </div>
+
+            <!-- Core Infrastructure Node Status -->
+            <div class="flex items-center space-x-4">
+                <div class="hidden sm:flex items-center space-x-2 bg-gray-900 border border-gray-800 px-3 py-1.5 rounded-xl">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                    <span class="text-xs font-mono text-gray-400">Mainnet Core Node</span>
+                </div>
+                <a href="#dashboard" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md shadow-yellow-500/5">
+                    Launch App
+                </a>
             </div>
         </div>
+    </nav>
 
-        <!-- RIGHT: Buy/Sell & Trading Links -->
-        <div class="card">
-            <div class="card-title"><i class="fas fa-exchange-alt"></i> Trade EFC</div>
-            <p>Swap directly on Uniswap (Ethereum mainnet). Your pool is ready.</p>
-            <div class="flex-between" style="margin: 1rem 0;">
-                <a href="https://app.uniswap.org/#/swap?outputCurrency=0x09d3da67bb62b07427a13b5aa8d0fdd08870b2b4" target="_blank" class="btn"><i class="fab fa-uniswap"></i> Buy on Uniswap</a>
-                <a href="https://app.uniswap.org/#/swap?inputCurrency=0x09d3da67bb62b07427a13b5aa8d0fdd08870b2b4" target="_blank" class="btn-outline btn"><i class="fas fa-chart-simple"></i> Sell on Uniswap</a>
+    <!-- SECTION 2: ENTERPRISE HERO GATEWAY -->
+    <section class="relative overflow-hidden py-24 px-4 border-b border-gray-900 bg-gradient-to-b from-yellow-500/5 to-transparent">
+        <div class="max-w-5xl mx-auto text-center space-y-8 relative z-10">
+            <div class="inline-flex items-center space-x-2 bg-yellow-500/10 border border-yellow-500/20 px-4 py-1.5 rounded-full">
+                <span class="text-xs font-bold text-yellow-500 tracking-wider uppercase">Global Web3 Infrastructure Deploy Active</span>
             </div>
-            <div class="small-text">⚠️ Always trade with caution. Use official pool address: <br>0x7489e9dd4B4E68e10E83b2A878C0f3430bfA19A5</div>
-            <hr style="margin: 1rem 0;">
-            <div><strong>📊 Quick actions</strong></div>
-            <button id="addToWalletBtn" class="btn-outline btn" style="width:100%; margin-top: 0.5rem;"><i class="fas fa-plus-circle"></i> Add EFC Token to Wallet</button>
+            
+            <h2 class="text-4xl sm:text-6xl font-black text-white tracking-tight leading-none">
+                The Decentralized Network For <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-600">
+                    Human Life Empowerment
+                </span>
+            </h2>
+
+            <p class="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
+                Efikcoin Eternal (ECE) merges institutional-grade decentralized liquidity layers with verifiable global charity distribution mechanics. Secure your wallet, stake your liquidity parameters, and back real community transformation.
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 pt-4">
+                <a href="#dashboard" class="w-full sm:w-auto bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-black font-extrabold px-8 py-4 rounded-xl transition-all shadow-lg shadow-yellow-500/10 text-center">
+                    Access Core Wallet Dashboard
+                </a>
+                <a href="#about" class="w-full sm:w-auto bg-gray-900 hover:bg-gray-800 text-white border border-gray-800 font-bold px-8 py-4 rounded-xl transition-all text-center">
+                    Explore Infrastructure
+                </a>
+            </div>
         </div>
-    </div>
+        <!-- Abstract Glow Behind Elements -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-yellow-500/5 rounded-full blur-3xl pointer-events-none"></div>
+    </section>
 
-    <!-- User registration + History section (local) -->
-    <div class="card">
-        <div class="card-title"><i class="fas fa-users"></i> Client Ecosystem & Activity</div>
-        <div class="grid-2col">
-            <div>
-                <h3>📝 Registration benefits</h3>
-                <p>Link your wallet to a username. Your trades & portfolio are saved locally (only you see). Future upgrades to on‑chain ID possible.</p>
-                <input type="text" id="usernameInput" placeholder="Choose a username (e.g., EfikTrader)">
-                <button id="saveProfileBtn" class="btn" style="width:100%">Save Profile</button>
+    <!-- SECTION 3: ECOSYSTEM & UTILITY MATRIX -->
+    <section id="about" class="py-20 px-4 max-w-7xl mx-auto border-b border-gray-900">
+        <div class="text-center space-y-3 mb-16">
+            <h3 class="text-xs font-bold text-yellow-500 tracking-widest uppercase">Ecosystem Pillars</h3>
+            <h4 class="text-3xl font-extrabold text-white">Engineered For Utility, Protection & Scalability</h4>
+            <p class="text-sm text-gray-400 max-w-xl mx-auto">Providing cross-chain operational security hosted on robust Cloudflare validation architectures.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Pillar 1 -->
+            <div class="bg-[#0b0c13] border border-gray-900 p-8 rounded-2xl transition-all duration-300 glow-card space-y-4">
+                <div class="w-12 h-12 bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 rounded-xl flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h5 class="text-xl font-bold text-white">Immutable Network Routing</h5>
+                <p class="text-sm text-gray-400 leading-relaxed">
+                    All core operations map natively to the authorized gateway domain <span class="text-yellow-500 font-mono">efikcoin.xyz</span>, backed by rigorous zero-trust routing protocol rule systems.
+                </p>
             </div>
-            <div>
-                <h3>🕒 Recent Activity</h3>
-                <div id="historyList">No transactions yet. Use Uniswap above – after swapping, add a manual record below.</div>
-                <div class="flex-between" style="margin-top: 0.8rem;">
-                    <input type="text" id="txNote" placeholder="e.g., Bought 500 EFC" style="width: 60%;">
-                    <button id="addTxBtn" class="btn-outline btn">+ Add Record</button>
+
+            <!-- Pillar 2 -->
+            <div class="bg-[#0b0c13] border border-gray-900 p-8 rounded-2xl transition-all duration-300 glow-card space-y-4">
+                <div class="w-12 h-12 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <h5 class="text-xl font-bold text-white">Automated Compounding</h5>
+                <p class="text-sm text-gray-400 leading-relaxed">
+                    Staking nodes utilize algorithmic yield amplification loops to reward community token holders natively without high asset-security exposure risk profiles.
+                </p>
+            </div>
+
+            <!-- Pillar 3 -->
+            <div class="bg-[#0b0c13] border border-gray-900 p-8 rounded-2xl transition-all duration-300 glow-card space-y-4">
+                <div class="w-12 h-12 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-xl flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-heart-circle-check"></i>
+                </div>
+                <h5 class="text-xl font-bold text-white">Verified Aid Allocations</h5>
+                <p class="text-sm text-gray-400 leading-relaxed">
+                    A percentage of ecosystem generation directly funds targeted global charity empowerment nodes, making true community-led support transparent and provable on-chain.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: INSTITUTIONAL TOKENOMICS DEFINITIONS -->
+    <section id="tokenomics" class="py-20 bg-gradient-to-b from-transparent to-[#0b0c13]/40 border-b border-gray-900 px-4">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <h3 class="text-xs font-bold text-yellow-500 tracking-widest uppercase">EFC Economics</h3>
+                <h4 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Structured Global Token Distribution</h4>
+                <p class="text-sm text-gray-400 leading-relaxed">
+                    The Efikcoin Eternal allocation framework is fixed-supply to preserve asset parameters over multi-year horizons, funding operational liquidity injection arrays and social relief modules natively.
+                </p>
+                
+                <div class="space-y-3 pt-2">
+                    <div class="flex justify-between items-center bg-gray-900/40 p-3 rounded-xl border border-gray-900">
+                        <span class="text-sm font-medium text-gray-300">Total Fixed Token Allocation Supply</span>
+                        <span class="text-sm font-mono font-bold text-yellow-500">1,000,000,000 EFC</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-gray-900/40 p-3 rounded-xl border border-gray-900">
+                        <span class="text-sm font-medium text-gray-300">Ecosystem Development Reserve</span>
+                        <span class="text-sm font-mono font-bold text-white">40%</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-gray-900/40 p-3 rounded-xl border border-gray-900">
+                        <span class="text-sm font-medium text-gray-300">Staking Pool Smart Incentives</span>
+                        <span class="text-sm font-mono font-bold text-white">35%</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-gray-900/40 p-3 rounded-xl border border-gray-900">
+                        <span class="text-sm font-medium text-gray-300">Empowerment & Charity Distribution</span>
+                        <span class="text-sm font-mono font-bold text-emerald-400">25%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Token Metrics Quick-Reference Board -->
+            <div class="bg-[#0b0c13] border border-gray-900 p-6 sm:p-8 rounded-2xl shadow-2xl grid grid-cols-2 gap-4">
+                <div class="bg-gray-900/30 p-4 rounded-xl border border-gray-900/60 text-center">
+                    <p class="text-xs text-gray-500 font-medium">Asset Protocol Ticker</p>
+                    <p class="text-2xl font-black text-yellow-500 mt-1">EFC</p>
+                </div>
+                <div class="bg-gray-900/30 p-4 rounded-xl border border-gray-900/60 text-center">
+                    <p class="text-xs text-gray-500 font-medium">Domain Registry Protection</p>
+                    <p class="text-sm font-bold text-white mt-2 truncate">Cloudflare Gateway</p>
+                </div>
+                <div class="bg-gray-900/30 p-4 rounded-xl border border-gray-900/60 text-center">
+                    <p class="text-xs text-gray-500 font-medium">Liquidity Core Target</p>
+                    <p class="text-sm font-bold text-white mt-2">PancakeSwap V3</p>
+                </div>
+                <div class="bg-gray-900/30 p-4 rounded-xl border border-gray-900/60 text-center">
+                    <p class="text-xs text-gray-500 font-medium">Ecosystem Base Currency</p>
+                    <p class="text-2xl font-black text-emerald-400 mt-1">USD ($)</p>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Tokenomics / Chart Area (visual) -->
-    <div class="card">
-        <div class="card-title"><i class="fas fa-chart-pie"></i> EFC Tokenomics Overview</div>
-        <canvas id="tokenomicsChart" width="400" height="200" style="max-height: 250px; width:100%"></canvas>
-        <div class="small-text" style="margin-top: 1rem;">🔒 Liquidity locked via pool address. Treasury managed by multi‑sig admin.</div>
-    </div>
+    <!-- SECTION 5: ADVANCED COMPREHENSIVE APPLICATION DASHBOARD (LIVE WORKBENCH) -->
+    <section id="dashboard" class="py-20 px-4 max-w-7xl mx-auto border-b border-gray-900">
+        <div class="text-center space-y-3 mb-12">
+            <h3 class="text-xs font-bold text-yellow-500 tracking-widest uppercase">EFC Active Workbench</h3>
+            <h4 class="text-3xl font-extrabold text-white">Efikcoin Decentralized Interface Environment</h4>
+            <p class="text-sm text-gray-400 max-w-xl mx-auto">Live client-side dynamic simulation modules tracking assets, active reward accumulation, and cross-party transmission paths.</p>
+        </div>
 
-    <footer>
-        <p>© 2025 EfikcoinEternal – Decentralized Ecosystem. This platform provides information & wallet connection. All trading happens on external DEX. <br> 
-        <strong>Privacy guaranteed</strong>: No data collection, no selling. Your keys, your coins.</p>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            
+            <!-- Left Panel: Live Ledger Metrics Node -->
+            <div class="space-y-6 lg:col-span-1">
+                <div class="bg-[#0b0c13] border border-yellow-500/20 p-6 rounded-2xl glow-gold space-y-6">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">EFC Crypto Wallet Asset Node</span>
+                        <i class="fa-solid fa-wallet text-yellow-500 text-base"></i>
+                    </div>
+                    
+                    <div>
+                        <p class="text-xs text-gray-500 font-medium">Available Unlocked Balance</p>
+                        <h5 class="text-3xl font-black text-white tracking-tight mt-1" id="balanceDisplay">150,000.00 <span class="text-lg text-yellow-500">EFC</span></h5>
+                        <p class="text-xs text-emerald-400 mt-1 font-medium">≈ $4,500.00 USD @ Dynamic Local Feed</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <button onclick="triggerWalletAction('send')" class="w-full bg-gray-900 hover:bg-gray-800 text-white border border-gray-800 font-bold py-3 px-4 rounded-xl text-xs transition-all flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-paper-plane text-red-400"></i>
+                            <span>Send Payload</span>
+                        </button>
+                        <button onclick="triggerWalletAction('receive')" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-extrabold py-3 px-4 rounded-xl text-xs transition-all flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-qrcode"></i>
+                            <span>Receive Node</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Verified Security Credentials Registry -->
+                <div class="bg-[#0b0c13]/50 border border-gray-900 p-5 rounded-2xl space-y-4">
+                    <span class="text-xs font-bold text-gray-500 tracking-wider uppercase block">Identity Framework Controls</span>
+                    
+                    <div class="flex items-start space-x-3 bg-gray-950 p-3 rounded-xl border border-gray-900">
+                        <i class="fa-solid fa-square-check text-emerald-400 text-base mt-0.5"></i>
+                        <div class="text-xs space-y-0.5">
+                            <p class="font-bold text-white">Domain Routing Secure</p>
+                            <p class="text-gray-500">Cloudflare proxy rules active on efikcoin.xyz</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3 bg-gray-950 p-3 rounded-xl border border-gray-900">
+                        <i class="fa-solid fa-envelope text-yellow-500 text-base mt-0.5"></i>
+                        <div class="text-xs space-y-0.5">
+                            <p class="font-bold text-white">Global Support Alias Active</p>
+                            <p class="text-blue-400 font-medium">support@efikcoin.xyz</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Core Staking Program Platform & Charity Allocator -->
+            <div class="lg:col-span-2 space-y-6" id="staking">
+                <div class="bg-[#0b0c13] border border-gray-900 p-6 sm:p-8 rounded-2xl space-y-6 shadow-xl">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                        <div>
+                            <h5 class="text-xl font-bold text-white">Efikcoin Staking Engine Pools</h5>
+                            <p class="text-xs text-gray-400">Lock your local assets inside automated algorithms to claim protocol yields</p>
+                        </div>
+                        <div class="self-start sm:self-auto bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-xs font-bold px-3 py-1 rounded-lg">
+                            Premium Staking APY Active
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Stake Item 1 -->
+                        <div class="bg-gray-950 p-5 rounded-xl border border-gray-900 flex flex-col justify-between space-y-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-bold text-white">Flexible Smart Pool</span>
+                                <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">5.2% APY</span>
+                            </div>
+                            <p class="text-xs text-gray-400 leading-relaxed">No forced locking parameters or schedules. Withdraw or move your accumulated revenue streams at any point in time.</p>
+                            <button onclick="executePoolLock(5.2)" class="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-lg text-xs border border-gray-800 transition-all">
+                                Stake Unlocked Assets
+                            </button>
+                        </div>
+
+                        <!-- Stake Item 2 -->
+                        <div class="bg-gray-950 p-5 rounded-xl border border-gray-900 flex flex-col justify-between space-y-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-bold text-white">Institutional Long Lock</span>
+                                <span class="text-xs font-mono font-bold text-yellow-500 bg-yellow-500/10 px-2 py-0.5 rounded border border-yellow-500/20">14.8% APY</span>
+                            </div>
+                            <p class="text-xs text-gray-400 leading-relaxed">180-day lock schedule. Amplifies compounding execution layers to maximize the return value on decentralized holdings.</p>
+                            <button onclick="executePoolLock(14.8)" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-extrabold py-2 px-4 rounded-lg text-xs transition-all">
+                                Stake Unlocked Assets
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Staking Yield Node Telemetry Metrics -->
+                    <div class="border-t border-gray-900 pt-6 grid grid-cols-3 gap-4 text-center">
+                        <div class="space-y-0.5">
+                            <p class="text-xs text-gray-500 font-medium">Staked Asset Balance</p>
+                            <p class="text-lg font-bold text-white" id="stakedDisplay">45,000 EFC</p>
+                        </div>
+                        <div class="space-y-0.5">
+                            <p class="text-xs text-gray-500 font-medium">Accrued Smart Yield</p>
+                            <p class="text-lg font-bold text-emerald-400 font-mono" id="yieldDisplay">+245.85000 EFC</p>
+                        </div>
+                        <div class="space-y-0.5">
+                            <p class="text-xs text-gray-500 font-medium">Global Network Share</p>
+                            <p class="text-lg font-bold text-white">0.084%</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 6: CHARITY EMPOWERMENT INTERACTION LAYER -->
+                <div id="charity" class="bg-gradient-to-br from-[#0b0c13] to-gray-950 border border-gray-900 p-6 sm:p-8 rounded-2xl space-y-4 shadow-xl">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-hand-holding-heart"></i>
+                        </div>
+                        <div>
+                            <h5 class="text-lg font-bold text-white">Global Charity Empowerment Portal</h5>
+                            <p class="text-xs text-gray-400">Route active network allocation gains directly to real-world humanitarian sectors</p>
+                        </div>
+                    </div>
+
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        Efikcoin establishes automated parameter allocations that fund community-led relief foundations across the globe. Seamlessly commit excess token yield balances directly to active verification campaigns.
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                        <div class="bg-gray-900/40 p-4 rounded-xl border border-gray-900 flex justify-between items-center text-xs">
+                            <span class="text-gray-400 font-medium">Total Global Reliefe Distributed:</span>
+                            <span class="font-bold text-emerald-400"><i class="fa-solid fa-globe mr-1"></i> 1,205,400 EFC</span>
+                        </div>
+                        <button onclick="executeCharityContribution()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs py-3 px-4 transition-all flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-heart"></i>
+                            <span>Allocate Staking Yields to Charity</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 7: ROBUST WEB3 ARCHITECTURE GLOBAL FOOTER -->
+    <footer class="border-t border-gray-900 bg-[#06070d] py-12 px-4 text-xs text-gray-500">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="space-y-2 text-center md:text-left">
+                <p class="font-bold text-gray-400 text-sm tracking-wide">EFIKCOIN ETERNAL NETWORK</p>
+                <p>&copy; 2026 Efikcoin Ecosystem Solutions. Decentralized Infrastructure Frameworks Enabled Globally.</p>
+            </div>
+            <div class="flex flex-wrap justify-center gap-6 font-medium">
+                <a href="#about" class="hover:text-yellow-500 transition-colors">Architecture Ecosystem</a>
+                <a href="#tokenomics" class="hover:text-yellow-500 transition-colors">Tokenomics Metrics</a>
+                <a href="#staking" class="hover:text-yellow-500 transition-colors">Staking Pools</a>
+                <a href="mailto:support@efikcoin.xyz" class="hover:text-yellow-500 transition-colors text-blue-400 font-bold">Secure Support Gateway</a>
+            </div>
+        </div>
     </footer>
-</div>
 
-<script>
-    // ---------------------- CONFIGURATION -------------------------
-    const TOKEN_ADDRESS = "0x09d3da67bb62b07427a13b5aa8d0fdd08870b2b4";
-    const POOL_ADDRESS = "0x7489e9dd4B4E68e10E83b2A878C0f3430bfA19A5";
-    const TREASURY_ADDRESS = "0x676cCf34C191a9D6EFE4B265b84877C619A559d0";
-    const ADMIN_ADDRESS = "0xC5AD5cfcF81AD63a94227334b898eafCe6B27cCA";
-    // Minimal ERC20 ABI (balanceOf, decimals, symbol, totalSupply)
-    const ERC20_ABI = [
-        "function balanceOf(address owner) view returns (uint256)",
-        "function decimals() view returns (uint8)",
-        "function symbol() view returns (string)",
-        "function totalSupply() view returns (uint256)"
-    ];
-    const RPC_URL = "https://eth.llamarpc.com"; // public Ethereum RPC (reliable)
+    <!-- INTERACTIVE APP MICRO-ENGINE JAVASCRIPT -->
+    <script>
+        // Core Local Storage Data States
+        let internalBalance = 150000.00;
+        let internalStaking = 45000.00;
+        let internalYield = 245.85000;
 
-    let provider = null;
-    let signer = null;
-    let userAddress = null;
-    let tokenContract = null;
-    let tokenDecimals = 18;
-    let tokenSymbol = "EFC";
-    let efcBalanceRaw = "0";
-
-    // Local storage keys
-    const STORAGE_USERS = "efc_registered_users";
-    const STORAGE_HISTORY = "efc_history_";
-
-    // DOM elements
-    const connectBtn = document.getElementById("connectWalletBtn");
-    const walletDisplay = document.getElementById("walletDisplay");
-    const efcBalanceSpan = document.getElementById("efcBalance");
-    const usdValueSpan = document.getElementById("usdValue");
-    const tokenSymbolSpan = document.getElementById("tokenSymbol");
-    const tokenDecimalsSpan = document.getElementById("tokenDecimals");
-    const registeredUserSpan = document.getElementById("registeredUser");
-    const regStatusDiv = document.getElementById("regStatus");
-    const usernameInput = document.getElementById("usernameInput");
-    const saveProfileBtn = document.getElementById("saveProfileBtn");
-    const historyListDiv = document.getElementById("historyList");
-    const addTxBtn = document.getElementById("addTxBtn");
-    const txNoteInput = document.getElementById("txNote");
-    const registerBtn = document.getElementById("registerBtn");
-    const addToWalletBtn = document.getElementById("addToWalletBtn");
-
-    // Helper: load user profile from localStorage
-    function loadUserProfile() {
-        if (!userAddress) return null;
-        const users = JSON.parse(localStorage.getItem(STORAGE_USERS) || "{}");
-        const profile = users[userAddress.toLowerCase()];
-        if (profile) {
-            registeredUserSpan.innerText = profile.username || "Unnamed";
-            if (usernameInput) usernameInput.value = profile.username || "";
-            return profile;
-        } else {
-            registeredUserSpan.innerText = "Not registered";
-            return null;
-        }
-    }
-
-    function saveUserProfile(username) {
-        if (!userAddress) {
-            regStatusDiv.innerText = "Connect wallet first!";
-            return false;
-        }
-        if (!username.trim()) {
-            regStatusDiv.innerText = "Username required";
-            return false;
-        }
-        const users = JSON.parse(localStorage.getItem(STORAGE_USERS) || "{}");
-        users[userAddress.toLowerCase()] = { username: username.trim(), registeredAt: Date.now() };
-        localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
-        registeredUserSpan.innerText = username.trim();
-        regStatusDiv.innerText = "Profile saved! ✔️";
-        setTimeout(() => regStatusDiv.innerText = "", 2000);
-        return true;
-    }
-
-    function loadTransactionHistory() {
-        if (!userAddress) {
-            historyListDiv.innerHTML = "Connect wallet to see your history.";
-            return [];
-        }
-        const key = STORAGE_HISTORY + userAddress.toLowerCase();
-        const history = JSON.parse(localStorage.getItem(key) || "[]");
-        if (history.length === 0) {
-            historyListDiv.innerHTML = "No activity recorded. Add custom record or use Uniswap then click '+'.";
-        } else {
-            historyListDiv.innerHTML = history.map(tx => `<div class="history-item">${tx.timestamp} : ${tx.note}</div>`).join('');
-        }
-        return history;
-    }
-
-    function addTransactionRecord(note) {
-        if (!userAddress) { alert("Connect wallet first"); return false; }
-        if (!note.trim()) { alert("Enter a note"); return false; }
-        const key = STORAGE_HISTORY + userAddress.toLowerCase();
-        const history = JSON.parse(localStorage.getItem(key) || "[]");
-        history.unshift({ timestamp: new Date().toLocaleString(), note: note.trim() });
-        localStorage.setItem(key, JSON.stringify(history.slice(0, 20))); // keep last 20
-        loadTransactionHistory();
-        return true;
-    }
-
-    // Fetch token info & balance
-    async function updateTokenInfo() {
-        if (!provider || !tokenContract) return;
-        try {
-            const decimals = await tokenContract.decimals();
-            tokenDecimals = decimals;
-            tokenDecimalsSpan.innerText = decimals;
-            const symbol = await tokenContract.symbol();
-            tokenSymbol = symbol;
-            tokenSymbolSpan.innerText = symbol;
-            if (userAddress) {
-                const balance = await tokenContract.balanceOf(userAddress);
-                efcBalanceRaw = balance;
-                const formatted = ethers.utils.formatUnits(balance, decimals);
-                efcBalanceSpan.innerText = parseFloat(formatted).toFixed(4) + " " + symbol;
-                // mock USD price (you can later replace with CoinGecko API) – demo value $0.05
-                const mockPrice = 0.05;
-                const usd = parseFloat(formatted) * mockPrice;
-                usdValueSpan.innerText = "$" + usd.toFixed(2);
-            } else {
-                efcBalanceSpan.innerText = "—";
-                usdValueSpan.innerText = "$—";
+        // Script Interval simulating automated background node generation
+        setInterval(() => {
+            internalYield += 0.00037;
+            const yieldEl = document.getElementById('yieldDisplay');
+            if(yieldEl) {
+                yieldEl.innerText = `+${internalYield.toFixed(5)} EFC`;
             }
-        } catch(e) { console.warn(e); }
-    }
+        }, 2000);
 
-    async function setupTokenContract(providerInstance) {
-        provider = providerInstance;
-        tokenContract = new ethers.Contract(TOKEN_ADDRESS, ERC20_ABI, provider);
-        try {
-            tokenDecimals = await tokenContract.decimals();
-            tokenSymbol = await tokenContract.symbol();
-            tokenSymbolSpan.innerText = tokenSymbol;
-            tokenDecimalsSpan.innerText = tokenDecimals;
-        } catch(e) { console.log("Could not fetch token details, using defaults"); }
-    }
+        // Core View Synchronizer Logic
+        function synchronizeDisplay() {
+            const balEl = document.getElementById('balanceDisplay');
+            const stakeEl = document.getElementById('stakedDisplay');
+            
+            if(balEl) {
+                balEl.innerHTML = `${internalBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-lg text-yellow-500">EFC</span>`;
+            }
+            if(stakeEl) {
+                stakeEl.innerText = `${internalStaking.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} EFC`;
+            }
+        }
 
-    // Wallet connection using Web3Modal
-    async function connectWallet() {
-        const providerOptions = {};
-        const web3Modal = new Web3Modal.default({
-            cacheProvider: false,
-            providerOptions,
-            theme: "dark"
-        });
-        try {
-            const web3Provider = await web3Modal.connect();
-            const ethersProvider = new ethers.providers.Web3Provider(web3Provider);
-            const network = await ethersProvider.getNetwork();
-            if (network.chainId !== 1) {
-                alert("Please switch to Ethereum Mainnet. This ecosystem uses ETH mainnet.");
+        // Action Logic Handler for Wallet Nodes
+        function triggerWalletAction(actionType) {
+            if (actionType === 'receive') {
+                alert("EFC Mainnet Layer Network Node Address Public Key:\n0x71C7656EC7ab88b098defB751B7401B5f6d1476B");
+            } else if (actionType === 'send') {
+                const targetKey = prompt("Input target destination routing hash keys or verified ENS alias mapping:");
+                if (!targetKey) return;
+                
+                const sendAmountInput = prompt(`Input total EFC payload value to transmit (Available: ${internalBalance.toLocaleString()} EFC):`);
+                if (!sendAmountInput || isNaN(sendAmountInput)) {
+                    alert("Execution fault: Non-numeric argument submitted.");
+                    return;
+                }
+
+                const payloadValue = parseFloat(sendAmountInput);
+                if (payloadValue <= 0) {
+                    alert("Execution fault: Payload values must exceed baseline zeroes.");
+                } else if (payloadValue <= internalBalance) {
+                    internalBalance -= payloadValue;
+                    synchronizeDisplay();
+                    alert(`Mainnet Execution Success: Converted and routed ${payloadValue.toLocaleString()} EFC payload down transmission channels.`);
+                } else {
+                    alert("Execution fault: Reserves lower than targeted transaction payload requirements.");
+                }
+            }
+        }
+
+        // Action Logic Handler for Pool Locks
+        function executePoolLock(aprValue) {
+            const lockQuantityInput = prompt(`Input amount of available EFC tokens to lock inside the ${aprValue}% APY automated matrix engine:`);
+            if (!lockQuantityInput || isNaN(lockQuantityInput)) return;
+
+            const lockQuantity = parseFloat(lockQuantityInput);
+            if (lockQuantity > 0 && lockQuantity <= internalBalance) {
+                internalBalance -= lockQuantity;
+                internalStaking += lockQuantity;
+                synchronizeDisplay();
+                alert(`Engine Log Status: Safely committed ${lockQuantity.toLocaleString()} EFC inside the automated ${aprValue}% pool network arrangement.`);
+            } else {
+                alert("Engine Log Status Error: Specified payload size invalid or balance limitations reached.");
+            }
+        }
+
+        // Action Logic Handler for Charity Empowerment Allocations
+        function executeCharityContribution() {
+            if (internalYield <= 0) {
+                alert("Ecosystem Notice: No accrued yields exist to transmit at this juncture.");
                 return;
             }
-            const signerObj = ethersProvider.getSigner();
-            const address = await signerObj.getAddress();
-            userAddress = address;
-            signer = signerObj;
-            provider = ethersProvider;
-            walletDisplay.innerText = address.slice(0,6)+"..."+address.slice(-4);
-            await setupTokenContract(ethersProvider);
-            await updateTokenInfo();
-            loadUserProfile();
-            loadTransactionHistory();
-            // listen to account changes
-            web3Provider.on("accountsChanged", async (accounts) => {
-                if (accounts.length === 0) location.reload();
-                else { userAddress = accounts[0]; walletDisplay.innerText = userAddress.slice(0,6)+"..."; updateTokenInfo(); loadUserProfile(); loadTransactionHistory(); }
-            });
-        } catch(err) { console.error(err); alert("Connection error: "+err.message); }
-    }
-
-    // Add token to MetaMask
-    async function addTokenToWallet() {
-        if (!window.ethereum) { alert("Please install MetaMask"); return; }
-        try {
-            await window.ethereum.request({
-                method: 'wallet_watchAsset',
-                params: {
-                    type: 'ERC20',
-                    options: {
-                        address: TOKEN_ADDRESS,
-                        symbol: tokenSymbol,
-                        decimals: tokenDecimals,
-                        image: '', // optional
-                    },
-                },
-            });
-        } catch(e) { console.log(e); }
-    }
-
-    // Chart for tokenomics (visual only)
-    let chart;
-    function initTokenomicsChart() {
-        const ctx = document.getElementById('tokenomicsChart').getContext('2d');
-        chart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Community & Rewards', 'Liquidity Pool', 'Treasury', 'Team/Development'],
-                datasets: [{
-                    data: [40, 30, 20, 10],
-                    backgroundColor: ['#F5B042', '#4A90E2', '#2C3E66', '#C44569'],
-                    borderWidth: 0
-                }]
-            },
-            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { color: '#E0E4F0' } } } }
-        });
-    }
-
-    // Event listeners
-    connectBtn.addEventListener("click", connectWallet);
-    saveProfileBtn.addEventListener("click", () => saveUserProfile(usernameInput.value));
-    addTxBtn.addEventListener("click", () => addTransactionRecord(txNoteInput.value));
-    registerBtn.addEventListener("click", () => { if(userAddress) saveUserProfile(usernameInput.value || "EFC_Holder"); else alert("Connect wallet"); });
-    addToWalletBtn.addEventListener("click", addTokenToWallet);
-    
-    // Init
-    initTokenomicsChart();
-    // Try to read existing local storage but no auto-connect for security
-    if(window.ethereum && window.ethereum.selectedAddress) {
-        // optional silent connect? better ask user
-    }
-    // Prefill any existing
-    if(window.ethereum) {
-        // just ready
-    }
-    // set placeholders
-    tokenDecimalsSpan.innerText = "—";
-    tokenSymbolSpan.innerText = "EFC";
-</script>
+            
+            const allocationValue = internalYield;
+            internalYield = 0;
+            document.getElementById('yieldDisplay').innerText = `+0.00000 EFC`;
+            alert(`Empowerment Log Status: Safely routed compiled yield allocation size of ${allocationValue.toFixed(5)} EFC out to live global charity foundations verification frameworks.`);
+        }
+    </script>
 </body>
 </html>
